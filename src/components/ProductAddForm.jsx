@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 const initialState = {
   productName: "",
   image: "",
-  price: 0,
+  price: 99,
   quantity: 0,
 };
-const ProductAddForm = ({ addProduct }) => {
+const ProductAddForm = ({ addProduct, editProduct, editData }) => {
   // const [name, setName] = useState();
 
   // Single State to Manage all the products details
@@ -23,11 +23,22 @@ const ProductAddForm = ({ addProduct }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // add product function here
-    addProduct(formState);
+    if (editData) {
+      editProduct(formState, editData.id);
+    } else {
+      // add product function here
+      addProduct(formState);
+    }
 
+    // reset form to initial state
     setFormState(initialState);
   };
+
+  useEffect(() => {
+    if (editData) {
+      setFormState(editData);
+    }
+  }, [editData]);
 
   return (
     <div style={{ padding: 8 }}>
@@ -76,7 +87,7 @@ const ProductAddForm = ({ addProduct }) => {
         <br />
         <br />
 
-        <button type="submit">Submit</button>
+        <button type="submit">{editData ? "Edit" : "Submit"}</button>
       </form>
     </div>
   );
@@ -84,6 +95,14 @@ const ProductAddForm = ({ addProduct }) => {
 
 ProductAddForm.propTypes = {
   addProduct: PropTypes.func.isRequired,
+  editData: PropTypes.shape({
+    name: PropTypes.string,
+    image: PropTypes.string,
+    price: PropTypes.string,
+    quantity: PropTypes.string,
+    id: PropTypes.string,
+  }),
+  editProduct: PropTypes.func,
 };
 
 export default ProductAddForm;

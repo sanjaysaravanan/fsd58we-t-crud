@@ -13,6 +13,7 @@ const initialProducts = [
     price: "9.99",
     quantity: "10",
     id: "23c739bd-3a46-4b52-b1a5-6d553cdf6900",
+    isStarred: false,
   },
   {
     productName: "Moto Phone",
@@ -21,6 +22,7 @@ const initialProducts = [
     price: "18.99",
     quantity: "20",
     id: "50989ac3-a035-484d-a044-5589de70f48a",
+    isStarred: false,
   },
   {
     productName: "Laptop",
@@ -29,6 +31,7 @@ const initialProducts = [
     price: "49.99",
     quantity: "10",
     id: "1772e77d-c333-49ff-86dd-fd4e5b2a13f2",
+    isStarred: false,
   },
   {
     productName: "Laptop",
@@ -37,12 +40,14 @@ const initialProducts = [
     price: "79.99",
     quantity: "18",
     id: "5747726b-eb03-4ed4-b57c-63d70a136199",
+    isStarred: false,
   },
 ];
 
 function App() {
   // State Variable Array of Products
   const [products, setProducts] = useState(initialProducts);
+  const [editData, setEditData] = useState(null);
 
   const addProduct = (formDetails) => {
     const product = {
@@ -65,11 +70,47 @@ function App() {
     setProducts(newProducts);
   };
 
+  const loadEditData = (pdData) => {
+    setEditData(pdData);
+  };
+
+  const editProduct = (formState, id) => {
+    const tempProducts = [...products];
+    const pdIndex = tempProducts.findIndex((p) => p.id === id);
+
+    tempProducts[pdIndex] = {
+      ...tempProducts[pdIndex], // existing values of the product
+      ...formState, // override the existing product with new values
+    };
+
+    setProducts(tempProducts);
+
+    setEditData(null);
+  };
+
+  const toggleStar = (pdId) => {
+    const index = products.findIndex((p) => p.id === pdId);
+
+    // change state value to a temp variable
+    const tempProducts = [...products];
+
+    if (tempProducts[index].isStarred) {
+      tempProducts[index].isStarred = false;
+    } else {
+      tempProducts[index].isStarred = true;
+    }
+    setProducts(tempProducts);
+  };
+
   return (
     <>
       <h1>CRUD Implementation Coming Soon</h1>
 
-      <ProductAddForm addProduct={addProduct} />
+      <ProductAddForm
+        addProduct={addProduct}
+        editProduct={editProduct}
+        editData={editData}
+      />
       <div style={{ display: "flex", flexWrap: "wrap" }}>
         {/* {products.map((pd) => (
           <Product
@@ -80,13 +121,16 @@ function App() {
             image={pd.image}
           />
         ))} */}
+        {console.log(products)}
         {products.map((pd) => (
           // Spread the properties from pd to Product component
           <Product
             key={pd.id}
             {...pd}
-            isStar={true}
+            isStar={pd.isStarred}
             deleteProduct={deleteProduct}
+            loadEditData={loadEditData}
+            toggleStar={toggleStar}
           />
         ))}
       </div>

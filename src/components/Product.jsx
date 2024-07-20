@@ -7,6 +7,8 @@ const Product = ({
   isStar,
   id,
   deleteProduct,
+  loadEditData,
+  toggleStar,
 }) => {
   return (
     <div
@@ -24,9 +26,28 @@ const Product = ({
       <h2>{productName}</h2>
       <h3>{price}</h3>
       <h4>Qty: {quantity}</h4>
-      {isStar && <i className="fa-solid fa-star"></i>}
+      <button onClick={() => toggleStar(id)}>
+        {isStar ? (
+          <i className="fa-solid fa-star"></i>
+        ) : (
+          <i className="fa-regular fa-star"></i>
+        )}
+      </button>
       <button onClick={() => deleteProduct(id)}>
         <i className="fa-solid fa-trash"></i>
+      </button>
+      <button
+        onClick={() =>
+          loadEditData({
+            productName,
+            image,
+            price,
+            quantity,
+            id,
+          })
+        }
+      >
+        <i className="fa-solid fa-pen-to-square"></i>
       </button>
     </div>
   );
